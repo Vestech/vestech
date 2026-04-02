@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const enPosts = allPosts
+  .filter(p => p.data.lang === 'en')
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automation'];
+---
+<BaseLayout title="Research at the edge of technology" lang="en">
+  <!-- Hero -->
+  <section class="grid-bg relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-4 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center">
+      <div class="flex flex-col gap-6">
+        <div class="tag w-fit">VesTech Research</div>
+        <h1 class="text-4xl md:text-6xl font-black leading-tight" style="font-family:'Space Grotesk',sans-serif">
+          <span class="text-[#e8f5e9]">Research at the</span><br/>
+          <span class="glow-green" style="color:#00ff41">edge of technology</span>
+        </h1>
+        <p class="text-[#7ab87a] text-lg leading-relaxed">
+          AI, QA, Fintech and DevOps — from practitioners on the front line.
+        </p>
+        <div class="flex gap-4 flex-wrap">
+          <a href="/en/blog" class="btn-primary">Read the blog →</a>
+          <a href="/en/about" class="text-[#7ab87a] hover:text-[#00e5cc] transition-colors flex items-center gap-1 text-sm">
+            About us →
+          </a>
+        </div>
+      </div>
+      <div class="relative flex justify-center">
+        <div class="relative w-64 h-64 md:w-80 md:h-80">
+          <div class="absolute inset-0 rounded-full bg-[#00ff41]/10 blur-3xl scale-110"></div>
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/30"
+               style="box-shadow: 0 0 60px rgba(0,255,65,0.2)">
+            <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
+          </div>
+          <div class="absolute inset-[-10px] rounded-full border border-[#00ff41]/10 animate-spin"
+               style="animation-duration: 20s;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured posts -->
+  <section class="max-w-6xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold mb-8 glow-green" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
+      Latest articles
+    </h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {enPosts.map(post => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.id}
+          tags={post.data.tags}
+          author={post.data.author}
+          pubDate={post.data.pubDate}
+          readTime={post.data.readTime}
+          lang="en"
+        />
+      ))}
+    </div>
+    <div class="text-center mt-10">
+      <a href="/en/blog" class="btn-primary">All articles →</a>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="max-w-6xl mx-auto px-4 py-12 border-t border-green-900/20">
+    <h2 class="text-xl font-bold mb-6 text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Topics</h2>
+    <div class="flex flex-wrap gap-3">
+      {topics.map(t => <span class="tag">{t}</span>)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+interface Props {
+  lang?: 'cs' | 'en';
+}
+const { lang = 'cs' } = Astro.props;
+const blogLabel = lang === 'cs' ? 'Blog' : 'Blog';
+const aboutLabel = lang === 'cs' ? 'O nás' : 'About';
+const otherLang = lang === 'cs' ? 'en' : 'cs';
+const otherUrl = lang === 'cs' ? '/en' : '/';
+---
+<nav class="sticky top-0 z-50 border-b border-green-900/30 bg-[#080c0a]/90 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <!-- Logo -->
+    <a href={lang === 'en' ? '/en' : '/'} class="flex items-center gap-3 group">
+      <div class="w-9 h-9 rounded-full overflow-hidden border border-[#00ff41]/40 group-hover:border-[#00ff41] transition-colors">
+        <img src="/images/guru-1.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
+      </div>
+      <span class="font-bold text-lg tracking-wide" style="font-family:'Space Grotesk',sans-serif">
+        <span style="color:#00ff41">VesTech</span>
+        <span class="text-[#e8f5e9]/80 text-sm font-normal ml-1">Research</span>
+      </span>
+    </a>
+
+    <!-- Nav links -->
+    <div class="flex items-center gap-6 text-sm font-medium">
+      <a href={lang === 'en' ? '/en/blog' : '/blog'}
+         class="text-[#7ab87a] hover:text-[#00ff41] transition-colors">{blogLabel}</a>
+      <a href={lang === 'en' ? '/en/about' : '/about'}
+         class="text-[#7ab87a] hover:text-[#00ff41] transition-colors">{aboutLabel}</a>
+      <a href={otherUrl}
+         class="border border-[#00ff41]/30 hover:border-[#00ff41] text-[#00ff41] px-3 py-1 rounded text-xs font-bold transition-colors uppercase tracking-widest">
+        {otherLang}
+      </a>
+    </div>
+  </div>
+</nav>

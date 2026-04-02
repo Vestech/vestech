@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter(p => p.data.lang === 'cs')
+    .map(post => ({ params: { slug: post.id }, props: { post } }));
+}
+
+import { render } from 'astro:content';
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, pubDate, author, tags, readTime } = post.data;
+const dateStr = pubDate.toLocaleDateString('cs-CZ', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={title} description={description} lang="cs">
+  <article class="max-w-3xl mx-auto px-4 py-16">
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      {tags.map(tag => <span class="tag">{tag}</span>)}
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-4xl md:text-5xl font-black text-[#e8f5e9] leading-tight mb-6"
+        style="font-family:'Space Grotesk',sans-serif">
+      {title}
+    </h1>
+
+    <!-- Meta -->
+    <div class="flex items-center gap-3 text-sm text-[#4a7a4a] mb-10 pb-6 border-b border-green-900/30">
+      <span class="text-[#00ff41]/80 font-medium">{author}</span>
+      <span>·</span>
+      <span>{dateStr}</span>
+      {readTime && <>
+        <span>·</span>
+        <span>{readTime} min čtení</span>
+      </>}
+    </div>
+
+    <!-- Content -->
+    <div class="prose-vestech">
+      <Content />
+    </div>
+
+    <!-- Back -->
+    <div class="mt-12 pt-6 border-t border-green-900/30">
+      <a href="/blog" class="text-[#00e5cc] hover:text-[#00ff41] transition-colors text-sm">
+        ← Zpět na blog
+      </a>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  tags: string[];
+  author: string;
+  pubDate: Date;
+  readTime?: number;
+  lang?: 'cs' | 'en';
+}
+const { title, description, slug, tags, author, pubDate, readTime, lang = 'cs' } = Astro.props;
+const href = lang === 'en' ? `/en/blog/${slug}` : `/blog/${slug}`;
+const dateStr = pubDate.toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<a href={href} class="card-glass rounded-lg p-6 flex flex-col gap-3 no-underline hover:no-underline group block">
+  <!-- Tags -->
+  <div class="flex flex-wrap gap-2">
+    {tags.map(tag => <span class="tag">{tag}</span>)}
+  </div>
+
+  <!-- Title -->
+  <h3 class="text-lg font-bold text-[#e8f5e9] group-hover:text-[#00ff41] transition-colors" style="font-family:'Space Grotesk',sans-serif">
+    {title}
+  </h3>
+
+  <!-- Description -->
+  <p class="text-[#7ab87a] text-sm leading-relaxed flex-1">{description}</p>
+
+  <!-- Meta -->
+  <div class="flex items-center justify-between text-xs text-[#4a7a4a] mt-2">
+    <div class="flex items-center gap-2">
+      <span class="text-[#00ff41]/70">{author}</span>
+      <span>·</span>
+      <span>{dateStr}</span>
+    </div>
+    {readTime && <span>{readTime} min {lang === 'cs' ? 'čtení' : 'read'}</span>}
+  </div>
+
+  <!-- CTA -->
+  <span class="text-[#00e5cc] text-sm font-medium group-hover:text-[#00ff41] transition-colors">
+    {lang === 'cs' ? 'Číst dál →' : 'Read more →'}
+  </span>
+</a>

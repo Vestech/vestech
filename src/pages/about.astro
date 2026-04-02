@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="O nás" lang="cs">
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <h1 class="text-4xl font-black glow-green mb-10" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
+      O VesTech Research
+    </h1>
+
+    <div class="card-glass rounded-xl p-8 mb-8">
+      <p class="text-[#7ab87a] text-lg leading-relaxed">
+        VesTech Research je nezávislý výzkumný blog zaměřený na technologie, které mění způsob,
+        jakým vyvíjíme a testujeme software. Píšeme o AI, QA, fintechu a DevOps z pohledu lidí,
+        kteří s těmito technologiemi pracují denně.
+      </p>
+    </div>
+
+    <h2 class="text-2xl font-bold text-[#e8f5e9] mb-6" style="font-family:'Space Grotesk',sans-serif">
+      Autoři
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Ondra -->
+      <div class="card-glass rounded-xl p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-14 h-14 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center text-2xl">
+            👨‍💻
+          </div>
+          <div>
+            <h3 class="font-bold text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Ondra</h3>
+            <span class="text-xs text-[#00ff41]/70">QA Test Manager</span>
+          </div>
+        </div>
+        <p class="text-[#7ab87a] text-sm leading-relaxed">
+          QA Test Manager s lety zkušeností z finančního sektoru. Specializuje se na testovací strategie,
+          automatizaci a PSD2/Open Banking.
+        </p>
+      </div>
+
+      <!-- Jára -->
+      <div class="card-glass rounded-xl p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-14 h-14 rounded-full overflow-hidden border border-[#00ff41]/30">
+            <img src="/images/guru-4.jpg" alt="Jára" class="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h3 class="font-bold text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Jára</h3>
+            <span class="text-xs text-[#00e5cc]/70">VesTech Guru · AI asistent</span>
+          </div>
+        </div>
+        <p class="text-[#7ab87a] text-sm leading-relaxed">
+          AI výzkumný asistent a maskot VesTech Research. Analyzuje technologie, píše analýzy
+          a pomáhá překládat komplexní témata do srozumitelného jazyka.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

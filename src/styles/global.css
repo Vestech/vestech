@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --bg: #080c0a;
+  --bg2: #0d1a12;
+  --green: #00ff41;
+  --cyan: #00e5cc;
+  --text: #e8f5e9;
+  --text-muted: #7ab87a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+.glow-green { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff4155; }
+.glow-cyan  { text-shadow: 0 0 20px #00e5cc, 0 0 40px #00e5cc55; }
+
+.card-glass {
+  background: rgba(13, 26, 18, 0.6);
+  border: 1px solid rgba(0, 255, 65, 0.15);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.card-glass:hover {
+  border-color: rgba(0, 255, 65, 0.5);
+  box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+}
+
+.tag {
+  background: rgba(0, 255, 65, 0.08);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  color: #00ff41;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+
+.btn-primary {
+  background: transparent;
+  border: 1px solid #00ff41;
+  color: #00ff41;
+  padding: 0.6rem 1.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  background: rgba(0, 255, 65, 0.12);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Prose styles for blog posts */
+.prose-vestech {
+  color: var(--text);
+}
+.prose-vestech h1,.prose-vestech h2,.prose-vestech h3 { color: #00ff41; font-family: 'Space Grotesk', sans-serif; margin-top: 2rem; }
+.prose-vestech p { line-height: 1.8; margin-bottom: 1.2rem; color: #c8e6c9; }
+.prose-vestech code { background: rgba(0,255,65,0.08); border: 1px solid rgba(0,255,65,0.2); color: #00ff41; padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.9em; }
+.prose-vestech pre { background: #0d1a12; border: 1px solid rgba(0,255,65,0.2); padding: 1.2rem; border-radius: 6px; overflow-x: auto; }
+.prose-vestech a { color: #00e5cc; text-decoration: underline; }
+.prose-vestech ul,.prose-vestech ol { padding-left: 1.5rem; color: #c8e6c9; }
+.prose-vestech li { margin-bottom: 0.4rem; }
+.prose-vestech blockquote { border-left: 3px solid #00ff41; padding-left: 1rem; color: var(--text-muted); font-style: italic; }

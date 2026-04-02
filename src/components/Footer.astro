@@ -1,0 +1,25 @@
+---
+interface Props {
+  lang?: 'cs' | 'en';
+}
+const { lang = 'cs' } = Astro.props;
+const copy = lang === 'cs'
+  ? '© 2026 VesTech Research. Všechna práva vyhrazena.'
+  : '© 2026 VesTech Research. All rights reserved.';
+---
+<footer class="border-t border-green-900/30 mt-16 py-8">
+  <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-full overflow-hidden border border-[#00ff41]/30">
+        <img src="/images/guru-1.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
+      </div>
+      <span class="text-[#7ab87a] text-sm">{copy}</span>
+    </div>
+    <div class="flex gap-4 text-sm text-[#7ab87a]">
+      <a href={lang === 'en' ? '/en/blog' : '/blog'} class="hover:text-[#00ff41] transition-colors">Blog</a>
+      <a href={lang === 'en' ? '/en/about' : '/about'} class="hover:text-[#00ff41] transition-colors">
+        {lang === 'cs' ? 'O nás' : 'About'}
+      </a>
+    </div>
+  </div>
+</footer>

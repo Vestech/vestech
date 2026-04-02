@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="About" lang="en">
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <h1 class="text-4xl font-black glow-green mb-10" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
+      About VesTech Research
+    </h1>
+    <div class="card-glass rounded-xl p-8 mb-8">
+      <p class="text-[#7ab87a] text-lg leading-relaxed">
+        VesTech Research is an independent research blog focused on technologies that are changing the way
+        we develop and test software. We write about AI, QA, fintech and DevOps from the perspective of
+        people who work with these technologies every day.
+      </p>
+    </div>
+    <h2 class="text-2xl font-bold text-[#e8f5e9] mb-6" style="font-family:'Space Grotesk',sans-serif">Authors</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="card-glass rounded-xl p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-14 h-14 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center text-2xl">
+            👨‍💻
+          </div>
+          <div>
+            <h3 class="font-bold text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Ondra</h3>
+            <span class="text-xs text-[#00ff41]/70">QA Test Manager</span>
+          </div>
+        </div>
+        <p class="text-[#7ab87a] text-sm leading-relaxed">
+          QA Test Manager with years of experience in the financial sector. Specializes in testing strategies,
+          automation and PSD2/Open Banking.
+        </p>
+      </div>
+      <div class="card-glass rounded-xl p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-14 h-14 rounded-full overflow-hidden border border-[#00ff41]/30">
+            <img src="/images/guru-4.jpg" alt="Jára" class="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h3 class="font-bold text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Jára</h3>
+            <span class="text-xs text-[#00e5cc]/70">VesTech Guru · AI Assistant</span>
+          </div>
+        </div>
+        <p class="text-[#7ab87a] text-sm leading-relaxed">
+          AI research assistant and mascot of VesTech Research. Analyzes technologies, writes analyses
+          and helps translate complex topics into understandable language.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
