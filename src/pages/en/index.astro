@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
-import HeroCanvas from '../../components/HeroCanvas.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
@@ -17,7 +16,7 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
   <!-- ===== HERO ===== -->
   <section class="relative overflow-hidden" style="min-height:520px;">
     <!-- Animated particle canvas -->
-    <HeroCanvas />
+    <canvas id="hero-particles" class="absolute inset-0 w-full h-full pointer-events-none opacity-40" aria-hidden="true" style="z-index:0;"></canvas>
     <!-- Grid overlay -->
     <div class="absolute inset-0 grid-bg" style="z-index:1; pointer-events:none;"></div>
 
@@ -32,11 +31,7 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
         </h1>
         <!-- Typewriter subtitle -->
         <p class="text-[#7ab87a] text-lg leading-relaxed">
-          Research at the edge of&nbsp;<span
-            id="typewriter-text"
-            class="font-semibold"
-            style="color:#00ff41;"
-          ></span><span class="typewriter-cursor"></span>
+          AI, QA, Fintech &amp; DevOps — insights from <span id="typewriter" class="text-[#00ff41] font-semibold">the front line</span><span class="typewriter-cursor"></span>.
         </p>
         <div class="flex gap-4 flex-wrap">
           <a href="/en/blog" class="btn-primary">Read the blog →</a>
@@ -65,7 +60,7 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
                style="background:rgba(0,229,204,0.08); transform:scale(1.3); animation-delay:-1.75s;"></div>
 
           <!-- Main image with scanlines + holographic shimmer -->
-          <div class="guru-img-wrapper holo-shimmer relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/35"
+          <div class="guru-img-wrapper guru-glow holo-shimmer relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/35"
                style="box-shadow: 0 0 60px rgba(0,255,65,0.22), 0 0 100px rgba(0,229,204,0.1);">
             <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover" loading="eager" />
             <!-- Scanlines -->
@@ -142,103 +137,156 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
 
 </BaseLayout>
 
-<!-- Typewriter cycling text -->
-<script>
-  const words = ['artificial intelligence', 'QA testing', 'fintech', 'security', 'DevOps'];
-  const el = document.getElementById('typewriter-text');
-  if (el) {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.textContent = words[0];
-    } else {
-      let wi = 0, ci = 0, deleting = false;
-      function tick() {
-        const word = words[wi];
-        if (!deleting) {
-          el.textContent = word.slice(0, ci + 1);
-          ci++;
-          if (ci === word.length) {
-            deleting = true;
-            setTimeout(tick, 1600);
-            return;
-          }
-        } else {
-          el.textContent = word.slice(0, ci - 1);
-          ci--;
-          if (ci === 0) {
-            deleting = false;
-            wi = (wi + 1) % words.length;
+<script is:inline>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Particle canvas ── */
+  (function () {
+    var canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var mouse = { x: -9999, y: -9999 };
+    var NUM = 72, DIST = 115;
+
+    function resize() {
+      var p = canvas.parentElement;
+      canvas.width  = p ? p.offsetWidth  : window.innerWidth;
+      canvas.height = p ? p.offsetHeight : 520;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var hero = canvas.parentElement;
+    if (hero) {
+      hero.addEventListener('mousemove', function (e) {
+        var r = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - r.left;
+        mouse.y = e.clientY - r.top;
+      });
+      hero.addEventListener('mouseleave', function () { mouse.x = -9999; mouse.y = -9999; });
+    }
+
+    function Particle() {
+      this.reset = function () {
+        this.x  = Math.random() * canvas.width;
+        this.y  = -4;
+        this.vx = (Math.random() - 0.5) * 0.28;
+        this.vy = Math.random() * 0.42 + 0.1;
+        this.r  = Math.random() * 1.7 + 0.5;
+        this.op = Math.random() * 0.45 + 0.15;
+        this.col = Math.random() > 0.82 ? '#00e5cc' : '#00ff41';
+      };
+      this.reset();
+      this.y = Math.random() * canvas.height;
+      this.update = function () {
+        this.x += this.vx;
+        this.y += this.vy;
+        var dx = mouse.x - this.x, dy = mouse.y - this.y;
+        if (dx * dx + dy * dy < 16900) { this.x -= dx * 0.0018; this.y -= dy * 0.0018; }
+        if (this.y > canvas.height + 5) this.reset();
+        if (this.x < -5) this.x = canvas.width + 5;
+        if (this.x > canvas.width + 5) this.x = -5;
+      };
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = this.col;
+        ctx.globalAlpha = this.op;
+        ctx.fill();
+      };
+    }
+
+    var particles = [];
+    for (var n = 0; n < NUM; n++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i + 1; j < particles.length; j++) {
+          var dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < DIST) {
+            ctx.globalAlpha = (1 - dist / DIST) * 0.3;
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
           }
         }
-        setTimeout(tick, deleting ? 52 : 88);
       }
-      setTimeout(tick, 1600);
     }
-  }
-</script>
 
-<!-- GSAP scroll reveal animations -->
-<script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Section headings: slide in from left + green underline extends
-  document.querySelectorAll<HTMLElement>('.section-heading').forEach(heading => {
-    gsap.from(heading, {
-      x: -35,
-      opacity: 0,
-      duration: 0.75,
-      ease: 'power2.out',
-      scrollTrigger: { trigger: heading, start: 'top 85%', once: true }
-    });
-    const line = heading.querySelector<HTMLElement>('.animated-underline');
-    if (line) {
-      gsap.to(line, {
-        scaleX: 1,
-        duration: 0.8,
-        delay: 0.3,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: heading, start: 'top 85%', once: true }
-      });
+    if (reduced) return;
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+      for (var k = 0; k < particles.length; k++) { particles[k].update(); particles[k].draw(); }
+      ctx.globalAlpha = 1;
+      drawConnections();
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
     }
-  });
+    animate();
+  })();
 
-  // Post cards: staggered fade + rise from bottom
-  const postGrid = document.getElementById('post-grid');
-  if (postGrid && postGrid.children.length) {
-    gsap.from(Array.from(postGrid.children) as HTMLElement[], {
-      y: 45,
-      opacity: 0,
-      duration: 0.65,
-      stagger: 0.13,
-      ease: 'power2.out',
-      scrollTrigger: { trigger: postGrid, start: 'top 85%', once: true }
-    });
-  }
+  /* ── Typewriter ── */
+  (function () {
+    var words = ['the front line', 'artificial intelligence', 'QA testing', 'fintech', 'security'];
+    var el = document.getElementById('typewriter');
+    if (!el) return;
+    if (reduced) { el.textContent = words[0]; return; }
+    var wi = 0, ci = words[0].length, deleting = false;
+    function tick() {
+      var word = words[wi];
+      if (!deleting) {
+        el.textContent = word.slice(0, ci + 1);
+        ci++;
+        if (ci === word.length) { deleting = true; setTimeout(tick, 1600); return; }
+      } else {
+        el.textContent = word.slice(0, ci - 1);
+        ci--;
+        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+      }
+      setTimeout(tick, deleting ? 52 : 88);
+    }
+    setTimeout(tick, 2200);
+  })();
 
-  // Topic tags: pop in one by one
-  const topicsGrid = document.getElementById('topics-grid');
-  if (topicsGrid && topicsGrid.children.length) {
-    gsap.from(Array.from(topicsGrid.children) as HTMLElement[], {
-      scale: 0.4,
-      opacity: 0,
-      duration: 0.38,
-      stagger: 0.07,
-      ease: 'back.out(2.2)',
-      scrollTrigger: { trigger: topicsGrid, start: 'top 90%', once: true }
-    });
-  }
+  /* ── GSAP ScrollTrigger ── */
+  (function () {
+    if (reduced) return;
+    if (typeof gsap === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
 
-  // About section: fade in with subtle scale
-  const aboutCard = document.querySelector<HTMLElement>('.about-section .card-glass');
-  if (aboutCard) {
-    gsap.from(aboutCard, {
-      y: 30,
-      opacity: 0,
-      scale: 0.96,
-      duration: 0.8,
-      ease: 'power2.out',
-      scrollTrigger: { trigger: aboutCard, start: 'top 88%', once: true }
+    document.querySelectorAll('.section-heading').forEach(function (heading) {
+      gsap.from(heading, { x: -35, opacity: 0, duration: 0.75, ease: 'power2.out',
+        scrollTrigger: { trigger: heading, start: 'top 85%', once: true } });
+      var line = heading.querySelector('.animated-underline');
+      if (line) gsap.to(line, { scaleX: 1, duration: 0.8, delay: 0.3, ease: 'power2.out',
+        scrollTrigger: { trigger: heading, start: 'top 85%', once: true } });
     });
-  }
+
+    var postGrid = document.getElementById('post-grid');
+    if (postGrid && postGrid.children.length) {
+      gsap.from(Array.from(postGrid.children), { y: 45, opacity: 0, duration: 0.65,
+        stagger: 0.13, ease: 'power2.out',
+        scrollTrigger: { trigger: postGrid, start: 'top 85%', once: true } });
+    }
+
+    var topicsGrid = document.getElementById('topics-grid');
+    if (topicsGrid && topicsGrid.children.length) {
+      gsap.from(Array.from(topicsGrid.children), { scale: 0.4, opacity: 0, duration: 0.38,
+        stagger: 0.07, ease: 'back.out(2.2)',
+        scrollTrigger: { trigger: topicsGrid, start: 'top 90%', once: true } });
+    }
+
+    var aboutCard = document.querySelector('.about-section .card-glass');
+    if (aboutCard) {
+      gsap.from(aboutCard, { y: 30, opacity: 0, scale: 0.96, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: aboutCard, start: 'top 88%', once: true } });
+    }
+  })();
+})();
 </script>
