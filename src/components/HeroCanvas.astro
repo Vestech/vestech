@@ -1,0 +1,106 @@
+<canvas id="hero-canvas" class="absolute inset-0 w-full h-full" aria-hidden="true" style="pointer-events:none; z-index:0;"></canvas>
+
+<script is:inline>
+(function () {
+  var canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var mouse = { x: -9999, y: -9999 };
+  var NUM = 72, DIST = 115;
+
+  function resize() {
+    var p = canvas.parentElement;
+    canvas.width = p ? p.offsetWidth : window.innerWidth;
+    canvas.height = p ? p.offsetHeight : 520;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var hero = canvas.parentElement;
+  if (hero) {
+    hero.addEventListener('mousemove', function (e) {
+      var r = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+    });
+    hero.addEventListener('mouseleave', function () {
+      mouse.x = -9999; mouse.y = -9999;
+    });
+  }
+
+  function Particle() {
+    this.reset = function () {
+      this.x = Math.random() * canvas.width;
+      this.y = -4;
+      this.vx = (Math.random() - 0.5) * 0.28;
+      this.vy = Math.random() * 0.42 + 0.1;
+      this.r = Math.random() * 1.7 + 0.5;
+      this.op = Math.random() * 0.45 + 0.15;
+      this.col = Math.random() > 0.82 ? '#00e5cc' : '#00ff41';
+    };
+    this.reset();
+    this.y = Math.random() * canvas.height;
+
+    this.update = function () {
+      this.x += this.vx;
+      this.y += this.vy;
+      var dx = mouse.x - this.x, dy = mouse.y - this.y;
+      var d2 = dx * dx + dy * dy;
+      if (d2 < 16900) {
+        var inv = 0.0018;
+        this.x -= dx * inv;
+        this.y -= dy * inv;
+      }
+      if (this.y > canvas.height + 5) { this.reset(); }
+      if (this.x < -5) this.x = canvas.width + 5;
+      if (this.x > canvas.width + 5) this.x = -5;
+    };
+
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.col;
+      ctx.globalAlpha = this.op;
+      ctx.fill();
+    };
+  }
+
+  var particles = [];
+  for (var n = 0; n < NUM; n++) particles.push(new Particle());
+
+  function drawConnections() {
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var dx = particles[i].x - particles[j].x;
+        var dy = particles[i].y - particles[j].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < DIST) {
+          ctx.globalAlpha = (1 - dist / DIST) * 0.3;
+          ctx.strokeStyle = '#00ff41';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    for (var k = 0; k < particles.length; k++) {
+      particles[k].update();
+      particles[k].draw();
+    }
+    ctx.globalAlpha = 1;
+    drawConnections();
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>

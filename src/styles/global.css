@@ -81,3 +81,155 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
 .prose-vestech ul,.prose-vestech ol { padding-left: 1.5rem; color: #c8e6c9; }
 .prose-vestech li { margin-bottom: 0.4rem; }
 .prose-vestech blockquote { border-left: 3px solid #00ff41; padding-left: 1rem; color: var(--text-muted); font-style: italic; }
+
+/* ===== HERO ANIMATIONS ===== */
+
+@keyframes float-guru {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes pulse-glow-aura {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes orbit-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbit-ccw {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes holo-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes boot-fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+.guru-float {
+  animation: float-guru 3.5s ease-in-out infinite;
+}
+
+.guru-glow-aura {
+  animation: pulse-glow-aura 3.5s ease-in-out infinite;
+}
+
+.orbit-ring-1 { animation: orbit-cw 20s linear infinite; }
+.orbit-ring-2 { animation: orbit-ccw 14s linear infinite; }
+.orbit-ring-3 { animation: orbit-cw 32s linear infinite; }
+
+/* Scanlines overlay */
+.scanlines-overlay {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, 0.025) 2px,
+    rgba(0, 255, 65, 0.025) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Holographic shimmer on hover */
+.holo-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.holo-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(0, 255, 65, 0.07) 38%,
+    rgba(0, 229, 204, 0.18) 50%,
+    rgba(0, 255, 65, 0.07) 62%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  background-position: 200% center;
+  opacity: 0;
+  animation: holo-shimmer 1.8s linear infinite paused;
+  z-index: 3;
+  border-radius: 50%;
+  transition: opacity 0.3s;
+}
+.holo-shimmer:hover::after {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+/* Eyes / image glow on hover */
+.guru-img-wrapper {
+  transition: box-shadow 0.4s ease;
+}
+.guru-container:hover .guru-img-wrapper {
+  box-shadow:
+    0 0 80px rgba(0, 255, 65, 0.55),
+    0 0 40px rgba(0, 229, 204, 0.3),
+    0 0 140px rgba(0, 255, 65, 0.2) !important;
+}
+
+/* Typewriter cursor */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #00ff41;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink-cursor 1s step-end infinite;
+}
+
+/* Section heading animated underline */
+.animated-underline {
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #00ff41, #00e5cc);
+  box-shadow: 0 0 8px #00ff41;
+  transform: scaleX(0);
+  transform-origin: left center;
+  margin-top: 4px;
+}
+
+/* Boot overlay */
+#boot-overlay {
+  position: fixed;
+  inset: 0;
+  background: #080c0a;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+}
+#boot-overlay.boot-gone {
+  animation: boot-fade-out 0.45s ease forwards;
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  .guru-float,
+  .guru-glow-aura,
+  .orbit-ring-1,
+  .orbit-ring-2,
+  .orbit-ring-3 { animation: none !important; }
+  .holo-shimmer::after { animation: none !important; }
+  .typewriter-cursor { animation: none !important; }
+  #boot-overlay { display: none !important; }
+}

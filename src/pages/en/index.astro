@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import HeroCanvas from '../../components/HeroCanvas.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
@@ -12,17 +13,30 @@ const enPosts = allPosts
 const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automation'];
 ---
 <BaseLayout title="Research at the edge of technology" lang="en">
-  <!-- Hero -->
-  <section class="grid-bg relative overflow-hidden">
-    <div class="max-w-6xl mx-auto px-4 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center">
+
+  <!-- ===== HERO ===== -->
+  <section class="relative overflow-hidden" style="min-height:520px;">
+    <!-- Animated particle canvas -->
+    <HeroCanvas />
+    <!-- Grid overlay -->
+    <div class="absolute inset-0 grid-bg" style="z-index:1; pointer-events:none;"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center" style="z-index:2;">
+
+      <!-- Text column -->
       <div class="flex flex-col gap-6">
         <div class="tag w-fit">VesTech Research</div>
         <h1 class="text-4xl md:text-6xl font-black leading-tight" style="font-family:'Space Grotesk',sans-serif">
           <span class="text-[#e8f5e9]">Research at the</span><br/>
           <span class="glow-green" style="color:#00ff41">edge of technology</span>
         </h1>
+        <!-- Typewriter subtitle -->
         <p class="text-[#7ab87a] text-lg leading-relaxed">
-          AI, QA, Fintech and DevOps — from practitioners on the front line.
+          Research at the edge of&nbsp;<span
+            id="typewriter-text"
+            class="font-semibold"
+            style="color:#00ff41;"
+          ></span><span class="typewriter-cursor"></span>
         </p>
         <div class="flex gap-4 flex-wrap">
           <a href="/en/blog" class="btn-primary">Read the blog →</a>
@@ -31,26 +45,47 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
           </a>
         </div>
       </div>
-      <div class="relative flex justify-center">
-        <div class="relative w-64 h-64 md:w-80 md:h-80">
-          <div class="absolute inset-0 rounded-full bg-[#00ff41]/10 blur-3xl scale-110"></div>
-          <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/30"
-               style="box-shadow: 0 0 60px rgba(0,255,65,0.2)">
-            <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
+
+      <!-- Living Guru avatar -->
+      <div class="guru-container relative flex justify-center">
+        <div class="guru-float relative w-64 h-64 md:w-80 md:h-80">
+
+          <!-- Orbit rings (outermost first) -->
+          <div class="orbit-ring-3 absolute rounded-full"
+               style="inset:-62px; border:1px solid rgba(0,255,65,0.07);"></div>
+          <div class="orbit-ring-2 absolute rounded-full"
+               style="inset:-38px; border:1px dashed rgba(0,229,204,0.2);"></div>
+          <div class="orbit-ring-1 absolute rounded-full"
+               style="inset:-18px; border:1px solid rgba(0,255,65,0.28);"></div>
+
+          <!-- Pulsing glow auras -->
+          <div class="guru-glow-aura absolute inset-0 rounded-full blur-3xl"
+               style="background:rgba(0,255,65,0.18); transform:scale(1.12);"></div>
+          <div class="guru-glow-aura absolute inset-0 rounded-full blur-2xl"
+               style="background:rgba(0,229,204,0.08); transform:scale(1.3); animation-delay:-1.75s;"></div>
+
+          <!-- Main image with scanlines + holographic shimmer -->
+          <div class="guru-img-wrapper holo-shimmer relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/35"
+               style="box-shadow: 0 0 60px rgba(0,255,65,0.22), 0 0 100px rgba(0,229,204,0.1);">
+            <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover" loading="eager" />
+            <!-- Scanlines -->
+            <div class="scanlines-overlay absolute inset-0"></div>
           </div>
-          <div class="absolute inset-[-10px] rounded-full border border-[#00ff41]/10 animate-spin"
-               style="animation-duration: 20s;"></div>
+
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- Featured posts -->
+  <!-- ===== FEATURED POSTS ===== -->
   <section class="max-w-6xl mx-auto px-4 py-16">
-    <h2 class="text-2xl font-bold mb-8 glow-green" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
+    <h2 class="text-2xl font-bold glow-green section-heading" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
       Latest articles
+      <span class="animated-underline"></span>
     </h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="mb-8"></div>
+    <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {enPosts.map(post => (
         <PostCard
           title={post.data.title}
@@ -69,11 +104,141 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
     </div>
   </section>
 
-  <!-- Topics -->
+  <!-- ===== TOPICS ===== -->
   <section class="max-w-6xl mx-auto px-4 py-12 border-t border-green-900/20">
-    <h2 class="text-xl font-bold mb-6 text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">Topics</h2>
-    <div class="flex flex-wrap gap-3">
-      {topics.map(t => <span class="tag">{t}</span>)}
+    <h2 class="text-xl font-bold mb-6 text-[#e8f5e9] section-heading" style="font-family:'Space Grotesk',sans-serif">
+      Topics
+      <span class="animated-underline"></span>
+    </h2>
+    <div id="topics-grid" class="flex flex-wrap gap-3">
+      {topics.map(t => (
+        <a href={`/en/blog?tag=${t}`} class="tag topic-tag hover:bg-[#00ff41]/15 transition-colors cursor-pointer">
+          {t}
+        </a>
+      ))}
     </div>
   </section>
+
+  <!-- ===== ABOUT SNIPPET ===== -->
+  <section class="max-w-6xl mx-auto px-4 py-16 about-section">
+    <div class="card-glass rounded-xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center">
+      <div class="w-24 h-24 rounded-full overflow-hidden border border-[#00ff41]/30 flex-shrink-0">
+        <img src="/images/guru-3.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
+      </div>
+      <div>
+        <h2 class="text-xl font-bold mb-3 text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
+          What is VesTech Research?
+        </h2>
+        <p class="text-[#7ab87a] leading-relaxed">
+          An independent research blog focused on technologies that are changing the way we develop and test software.
+          We write about AI, QA, fintech and DevOps from the perspective of practitioners who work with these technologies daily.
+        </p>
+        <a href="/en/about" class="text-[#00e5cc] text-sm mt-3 inline-block hover:text-[#00ff41] transition-colors">
+          More about us →
+        </a>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
+
+<!-- Typewriter cycling text -->
+<script>
+  const words = ['artificial intelligence', 'QA testing', 'fintech', 'security', 'DevOps'];
+  const el = document.getElementById('typewriter-text');
+  if (el) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.textContent = words[0];
+    } else {
+      let wi = 0, ci = 0, deleting = false;
+      function tick() {
+        const word = words[wi];
+        if (!deleting) {
+          el.textContent = word.slice(0, ci + 1);
+          ci++;
+          if (ci === word.length) {
+            deleting = true;
+            setTimeout(tick, 1600);
+            return;
+          }
+        } else {
+          el.textContent = word.slice(0, ci - 1);
+          ci--;
+          if (ci === 0) {
+            deleting = false;
+            wi = (wi + 1) % words.length;
+          }
+        }
+        setTimeout(tick, deleting ? 52 : 88);
+      }
+      setTimeout(tick, 1600);
+    }
+  }
+</script>
+
+<!-- GSAP scroll reveal animations -->
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Section headings: slide in from left + green underline extends
+  document.querySelectorAll<HTMLElement>('.section-heading').forEach(heading => {
+    gsap.from(heading, {
+      x: -35,
+      opacity: 0,
+      duration: 0.75,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: heading, start: 'top 85%', once: true }
+    });
+    const line = heading.querySelector<HTMLElement>('.animated-underline');
+    if (line) {
+      gsap.to(line, {
+        scaleX: 1,
+        duration: 0.8,
+        delay: 0.3,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: heading, start: 'top 85%', once: true }
+      });
+    }
+  });
+
+  // Post cards: staggered fade + rise from bottom
+  const postGrid = document.getElementById('post-grid');
+  if (postGrid && postGrid.children.length) {
+    gsap.from(Array.from(postGrid.children) as HTMLElement[], {
+      y: 45,
+      opacity: 0,
+      duration: 0.65,
+      stagger: 0.13,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: postGrid, start: 'top 85%', once: true }
+    });
+  }
+
+  // Topic tags: pop in one by one
+  const topicsGrid = document.getElementById('topics-grid');
+  if (topicsGrid && topicsGrid.children.length) {
+    gsap.from(Array.from(topicsGrid.children) as HTMLElement[], {
+      scale: 0.4,
+      opacity: 0,
+      duration: 0.38,
+      stagger: 0.07,
+      ease: 'back.out(2.2)',
+      scrollTrigger: { trigger: topicsGrid, start: 'top 90%', once: true }
+    });
+  }
+
+  // About section: fade in with subtle scale
+  const aboutCard = document.querySelector<HTMLElement>('.about-section .card-glass');
+  if (aboutCard) {
+    gsap.from(aboutCard, {
+      y: 30,
+      opacity: 0,
+      scale: 0.96,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: aboutCard, start: 'top 88%', once: true }
+    });
+  }
+</script>

@@ -23,10 +23,47 @@ const { title, description = 'VesTech Research — výzkum na hraně technologi�
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body class="min-h-screen flex flex-col">
+    <!-- Boot overlay: terminal-style startup sequence -->
+    <div id="boot-overlay" aria-hidden="true">
+      <div id="boot-text" style="text-align:left; max-width:420px; line-height:2.2; font-size:0.85rem; color:#00ff41;"></div>
+    </div>
+
     <Navbar lang={lang} />
     <main class="flex-1">
       <slot />
     </main>
     <Footer lang={lang} />
+
+    <script is:inline>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var o = document.getElementById('boot-overlay');
+        if (o) o.remove();
+        return;
+      }
+      var overlay = document.getElementById('boot-overlay');
+      var textEl = document.getElementById('boot-text');
+      if (!overlay || !textEl) return;
+      var lines = [
+        '> VesTech Research v2.6.0',
+        '> Loading AI modules... <span style="color:#00e5cc">OK</span>',
+        '> Welcome, researcher.'
+      ];
+      var i = 0;
+      function showLine() {
+        if (i >= lines.length) {
+          setTimeout(function () {
+            overlay.classList.add('boot-gone');
+            setTimeout(function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 500);
+          }, 300);
+          return;
+        }
+        textEl.innerHTML += lines[i] + '<br>';
+        i++;
+        setTimeout(showLine, 165);
+      }
+      showLine();
+    })();
+    </script>
   </body>
 </html>
