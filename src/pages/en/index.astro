@@ -141,21 +141,15 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
 (function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── Particle canvas ── */
+  /* ── Tree-network canvas ── */
   (function () {
     var canvas = document.getElementById('hero-particles');
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
     var mouse = { x: -9999, y: -9999 };
-    var NUM = 72, DIST = 115;
-
-    function resize() {
-      var p = canvas.parentElement;
-      canvas.width  = p ? p.offsetWidth  : window.innerWidth;
-      canvas.height = p ? p.offsetHeight : 520;
-    }
-    resize();
-    window.addEventListener('resize', resize);
+    var parallax = { x: 0, y: 0 };
+    var branches = [], nodes = [], energyDots = [];
+    var startTime = Date.now();
 
     var hero = canvas.parentElement;
     if (hero) {
@@ -167,65 +161,146 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
       hero.addEventListener('mouseleave', function () { mouse.x = -9999; mouse.y = -9999; });
     }
 
-    function Particle() {
-      this.reset = function () {
-        this.x  = Math.random() * canvas.width;
-        this.y  = -4;
-        this.vx = (Math.random() - 0.5) * 0.28;
-        this.vy = Math.random() * 0.42 + 0.1;
-        this.r  = Math.random() * 1.7 + 0.5;
-        this.op = Math.random() * 0.45 + 0.15;
-        this.col = Math.random() > 0.82 ? '#00e5cc' : '#00ff41';
-      };
-      this.reset();
-      this.y = Math.random() * canvas.height;
-      this.update = function () {
-        this.x += this.vx;
-        this.y += this.vy;
-        var dx = mouse.x - this.x, dy = mouse.y - this.y;
-        if (dx * dx + dy * dy < 16900) { this.x -= dx * 0.0018; this.y -= dy * 0.0018; }
-        if (this.y > canvas.height + 5) this.reset();
-        if (this.x < -5) this.x = canvas.width + 5;
-        if (this.x > canvas.width + 5) this.x = -5;
-      };
-      this.draw = function () {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.col;
-        ctx.globalAlpha = this.op;
-        ctx.fill();
-      };
+    function Branch(x, y, angle, length, depth, width) {
+      this.x = x; this.y = y;
+      this.angle = angle; this.length = length;
+      this.depth = depth; this.width = width;
+      var rad = angle * Math.PI / 180;
+      this.ex = x + Math.cos(rad) * length;
+      this.ey = y + Math.sin(rad) * length;
+      var perp = (angle + 90) * Math.PI / 180;
+      var bend = (Math.random() - 0.5) * length * 0.35;
+      this.cx = (x + this.ex) / 2 + Math.cos(perp) * bend;
+      this.cy = (y + this.ey) / 2 + Math.sin(perp) * bend;
+      this.children = [];
     }
 
-    var particles = [];
-    for (var n = 0; n < NUM; n++) particles.push(new Particle());
-
-    function drawConnections() {
-      for (var i = 0; i < particles.length; i++) {
-        for (var j = i + 1; j < particles.length; j++) {
-          var dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < DIST) {
-            ctx.globalAlpha = (1 - dist / DIST) * 0.3;
-            ctx.strokeStyle = '#00ff41';
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
+    function splitBranch(branch, maxDepth, spreadAngle, lengthDecay) {
+      if (branch.depth >= maxDepth) {
+        nodes.push({ x: branch.ex, y: branch.ey, phase: Math.random() * Math.PI * 2, r: Math.random() * 2.5 + 2.5 });
+        return;
+      }
+      var numChildren = (branch.depth < 2 && Math.random() > 0.5) ? 3 : 2;
+      var totalSpread = spreadAngle * (numChildren - 1);
+      for (var i = 0; i < numChildren; i++) {
+        var childAngle = branch.angle - totalSpread / 2 + i * spreadAngle + (Math.random() - 0.5) * 12;
+        var childLength = branch.length * lengthDecay * (0.88 + Math.random() * 0.24);
+        var childWidth = Math.max(0.4, branch.width * 0.65);
+        var child = new Branch(branch.ex, branch.ey, childAngle, childLength, branch.depth + 1, childWidth);
+        branch.children.push(child);
+        branches.push(child);
+        var numDots = branch.depth < 3 ? 2 : 1;
+        for (var d = 0; d < numDots; d++) {
+          energyDots.push({ branch: child, t: Math.random(), speed: 0.003 + Math.random() * 0.004 });
         }
+        splitBranch(child, maxDepth, spreadAngle, lengthDecay);
       }
     }
 
-    if (reduced) return;
-    function animate() {
+    function generateTree() {
+      branches = []; nodes = []; energyDots = [];
+      var root = new Branch(canvas.width / 2, canvas.height + 50, -90, canvas.height * 0.35, 0, 2.5);
+      branches.push(root);
+      energyDots.push({ branch: root, t: 0, speed: 0.003 + Math.random() * 0.003 });
+      energyDots.push({ branch: root, t: 0.4, speed: 0.003 + Math.random() * 0.003 });
+      splitBranch(root, 5, 30, 0.65);
+    }
+
+    function resize() {
+      var p = canvas.parentElement;
+      canvas.width  = p ? p.offsetWidth  : window.innerWidth;
+      canvas.height = p ? p.offsetHeight : 520;
+      generateTree();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawBranch(b) {
+      var alpha = Math.max(0.15, 0.6 - b.depth * 0.07);
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#00ff41';
+      ctx.lineWidth = b.width;
+      ctx.beginPath();
+      ctx.moveTo(b.x, b.y);
+      if (b.depth % 2 === 0) {
+        ctx.quadraticCurveTo(b.cx, b.cy, b.ex, b.ey);
+      } else {
+        ctx.lineTo(b.ex, b.ey);
+      }
+      ctx.stroke();
+    }
+
+    function drawNodes(t) {
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        var pulse = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 0.002 + n.phase));
+        var grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 3);
+        grad.addColorStop(0, 'rgba(0,229,204,0.9)');
+        grad.addColorStop(1, 'rgba(0,229,204,0)');
+        ctx.globalAlpha = pulse;
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = pulse * 0.85;
+        ctx.fillStyle = 'rgba(0,229,204,0.8)';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function getBranchPoint(b, t) {
+      if (b.depth % 2 === 0) {
+        var mt = 1 - t;
+        return { x: mt*mt*b.x + 2*mt*t*b.cx + t*t*b.ex, y: mt*mt*b.y + 2*mt*t*b.cy + t*t*b.ey };
+      }
+      return { x: b.x + (b.ex - b.x) * t, y: b.y + (b.ey - b.y) * t };
+    }
+
+    function drawEnergyDots() {
+      for (var i = 0; i < energyDots.length; i++) {
+        var dot = energyDots[i];
+        dot.t += dot.speed;
+        if (dot.t > 1.1) dot.t = 0;
+        if (dot.t > 1) continue;
+        var pt = getBranchPoint(dot.branch, dot.t);
+        var fade = dot.t > 0.8 ? (1 - dot.t) / 0.2 : 1;
+        ctx.globalAlpha = fade * 0.9;
+        ctx.fillStyle = 'rgba(0,255,65,1)';
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = fade * 0.4;
+        ctx.fillStyle = 'rgba(0,255,65,0.6)';
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    if (reduced) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var bi = 0; bi < branches.length; bi++) drawBranch(branches[bi]);
       ctx.globalAlpha = 1;
-      for (var k = 0; k < particles.length; k++) { particles[k].update(); particles[k].draw(); }
+      drawNodes(0);
+      return;
+    }
+
+    function animate() {
+      var t = Date.now() - startTime;
+      var cx = canvas.width / 2, cy = canvas.height / 2;
+      if (mouse.x !== -9999) {
+        parallax.x += ((mouse.x - cx) * 0.02 - parallax.x) * 0.08;
+        parallax.y += ((mouse.y - cy) * 0.01 - parallax.y) * 0.08;
+      } else {
+        parallax.x *= 0.95; parallax.y *= 0.95;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(parallax.x, parallax.y);
+      for (var bi = 0; bi < branches.length; bi++) drawBranch(branches[bi]);
       ctx.globalAlpha = 1;
-      drawConnections();
+      drawNodes(t);
       ctx.globalAlpha = 1;
+      drawEnergyDots();
+      ctx.restore();
       requestAnimationFrame(animate);
     }
     animate();
