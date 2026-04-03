@@ -14,62 +14,57 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
 <BaseLayout title="Výzkum na hraně technologií" lang="cs">
 
   <!-- ===== HERO ===== -->
-  <section class="relative overflow-hidden" style="min-height:520px;">
-    <!-- Animated particle canvas -->
-    <canvas id="hero-particles" class="absolute inset-0 w-full h-full pointer-events-none opacity-40" aria-hidden="true" style="z-index:0;"></canvas>
-    <!-- Grid overlay -->
-    <div class="absolute inset-0 grid-bg" style="z-index:1; pointer-events:none;"></div>
+  <section class="relative overflow-hidden px-4 pt-8 md:pt-12">
+    <div class="absolute inset-0 pointer-events-none" style="background:
+      radial-gradient(circle at 18% 24%, rgba(0,255,65,0.12), transparent 28%),
+      radial-gradient(circle at 82% 18%, rgba(0,229,204,0.12), transparent 24%),
+      linear-gradient(180deg, rgba(1,12,8,0.92) 0%, rgba(4,10,11,0.82) 52%, rgba(2,6,7,0.96) 100%);"></div>
 
-    <div class="relative max-w-6xl mx-auto px-4 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center" style="z-index:2;">
+    <div class="relative max-w-6xl mx-auto overflow-hidden rounded-[2rem] border border-[#00ff41]/12 bg-[#050b0b]/90 shadow-[0_0_0_1px_rgba(0,255,65,0.04),0_30px_120px_rgba(0,0,0,0.55)]">
+      <div class="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen" style="background-image:url('/images/guru-reference.jpg'); background-size:cover; background-position:76% center; filter:saturate(1.1) blur(1px);"></div>
+      <div class="absolute inset-0 pointer-events-none" style="background:
+        linear-gradient(90deg, rgba(3,7,8,0.97) 0%, rgba(3,7,8,0.94) 38%, rgba(3,7,8,0.72) 60%, rgba(3,7,8,0.32) 100%),
+        radial-gradient(circle at 76% 42%, rgba(0,255,65,0.16), transparent 28%),
+        radial-gradient(circle at 82% 38%, rgba(0,229,204,0.18), transparent 22%);"></div>
+      <div class="absolute inset-0 grid-bg opacity-30 pointer-events-none"></div>
+      <div class="absolute inset-y-0 right-0 w-[52%] pointer-events-none" style="background:linear-gradient(180deg, rgba(0,255,65,0.08), transparent 26%, transparent 72%, rgba(0,229,204,0.06)); mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.95) 18%, rgba(0,0,0,1) 100%);"></div>
 
-      <!-- Text column -->
-      <div class="flex flex-col gap-6">
-        <div class="tag w-fit">VesTech Research</div>
-        <h1 class="text-4xl md:text-6xl font-black leading-tight" style="font-family:'Space Grotesk',sans-serif">
-          <span class="text-[#e8f5e9]">Výzkum na</span><br/>
-          <span class="glow-green" style="color:#00ff41">hraně technologií</span>
-        </h1>
-        <!-- Typewriter subtitle -->
-        <p class="text-[#7ab87a] text-lg leading-relaxed">
-          AI, QA, Fintech a DevOps — pohledem praktiků z <span id="typewriter" class="text-[#00ff41] font-semibold">první linie</span><span class="typewriter-cursor"></span>.
-        </p>
-        <div class="flex gap-4 flex-wrap">
-          <a href="/blog" class="btn-primary">Číst blog →</a>
-          <a href="/about" class="text-[#7ab87a] hover:text-[#00e5cc] transition-colors flex items-center gap-1 text-sm">
-            O nás →
-          </a>
-        </div>
-      </div>
-
-      <!-- Living Guru avatar -->
-      <div class="guru-container relative flex justify-center">
-        <div class="guru-float relative w-64 h-64 md:w-80 md:h-80">
-
-          <!-- Orbit rings (outermost first) -->
-          <div class="orbit-ring-3 absolute rounded-full"
-               style="inset:-62px; border:1px solid rgba(0,255,65,0.07);"></div>
-          <div class="orbit-ring-2 absolute rounded-full"
-               style="inset:-38px; border:1px dashed rgba(0,229,204,0.2);"></div>
-          <div class="orbit-ring-1 absolute rounded-full"
-               style="inset:-18px; border:1px solid rgba(0,255,65,0.28);"></div>
-
-          <!-- Pulsing glow auras -->
-          <div class="guru-glow-aura absolute inset-0 rounded-full blur-3xl"
-               style="background:rgba(0,255,65,0.18); transform:scale(1.12);"></div>
-          <div class="guru-glow-aura absolute inset-0 rounded-full blur-2xl"
-               style="background:rgba(0,229,204,0.08); transform:scale(1.3); animation-delay:-1.75s;"></div>
-
-          <!-- Main image with scanlines + holographic shimmer -->
-          <div class="guru-img-wrapper guru-glow holo-shimmer relative w-full h-full rounded-full overflow-hidden border-2 border-[#00ff41]/35"
-               style="box-shadow: 0 0 60px rgba(0,255,65,0.22), 0 0 100px rgba(0,229,204,0.1);">
-            <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover" loading="eager" />
-            <!-- Scanlines -->
-            <div class="scanlines-overlay absolute inset-0"></div>
+      <div class="relative z-10 grid md:grid-cols-[1.05fr_0.95fr] gap-10 items-center px-6 py-12 md:px-10 md:py-16 lg:px-14 lg:py-20">
+        <div class="flex flex-col gap-6 max-w-xl">
+          <div class="tag w-fit">VesTech Research</div>
+          <h1 class="text-4xl md:text-6xl font-black leading-tight" style="font-family:'Space Grotesk',sans-serif">
+            <span class="text-[#e8f5e9]">Výzkum na</span><br/>
+            <span class="glow-green" style="color:#00ff41">hraně technologií</span>
+          </h1>
+          <p class="text-[#93c89a] text-lg leading-relaxed max-w-lg">
+            AI, QA, Fintech a DevOps — pohledem praktiků z <span id="typewriter" class="text-[#00ff41] font-semibold">první linie</span><span class="typewriter-cursor"></span>.
+          </p>
+          <div class="flex gap-4 flex-wrap">
+            <a href="/blog" class="btn-primary">Číst blog →</a>
+            <a href="/about" class="text-[#7ab87a] hover:text-[#00e5cc] transition-colors flex items-center gap-1 text-sm">
+              O nás →
+            </a>
           </div>
+        </div>
 
+        <div class="relative flex justify-center md:justify-end">
+          <div class="relative w-full max-w-[32rem] min-h-[24rem] md:min-h-[30rem]">
+            <div class="absolute inset-y-[8%] right-[4%] left-[16%] rounded-[2rem] border border-[#00ff41]/12 bg-[#04110d]/20 backdrop-blur-[2px] shadow-[inset_0_0_80px_rgba(0,255,65,0.08),0_0_120px_rgba(0,229,204,0.12)]"></div>
+            <div class="absolute inset-y-[4%] right-0 left-[8%] rounded-[2rem] opacity-80 mix-blend-screen" style="background-image:url('/images/guru-reference.jpg'); background-size:cover; background-position:78% center; filter:saturate(1.2) contrast(1.05);"></div>
+            <div class="absolute inset-y-[4%] right-0 left-[8%] rounded-[2rem]" style="background:linear-gradient(90deg, rgba(5,11,11,0.88) 0%, rgba(5,11,11,0.48) 34%, rgba(5,11,11,0.12) 100%);"></div>
+            <div class="absolute -left-2 top-[10%] h-28 w-28 rounded-full blur-3xl" style="background:rgba(0,255,65,0.18);"></div>
+            <div class="absolute right-[8%] bottom-[10%] h-32 w-32 rounded-full blur-3xl" style="background:rgba(0,229,204,0.14);"></div>
+
+            <div class="guru-float absolute bottom-0 left-[2%] md:left-[6%] w-[72%] max-w-[22rem]">
+              <div class="relative overflow-hidden rounded-[2rem] border border-[#00ff41]/20 bg-[#040908] shadow-[0_0_80px_rgba(0,255,65,0.12),0_20px_80px_rgba(0,0,0,0.45)]">
+                <img src="/images/guru-2.jpg" alt="VesTech Guru" class="w-full h-full object-cover object-center" loading="eager" />
+                <div class="scanlines-overlay absolute inset-0"></div>
+                <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.22));"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -140,174 +135,6 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
 <script is:inline>
 (function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ── PCB Circuit-Board background ── */
-  (function () {
-    var canvas = document.getElementById('hero-particles');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var mouse = { x: -9999, y: -9999 };
-    var parallax = { x: 0, y: 0 };
-    var segs = [], nodes = [], dots = [];
-    var startTime = Date.now();
-
-    var hero = canvas.parentElement;
-    if (hero) {
-      hero.addEventListener('mousemove', function (e) {
-        var r = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - r.left;
-        mouse.y = e.clientY - r.top;
-      });
-      hero.addEventListener('mouseleave', function () { mouse.x = -9999; mouse.y = -9999; });
-    }
-
-    // PCB circuit: axis-aligned segments with 90° turns, symmetric tree
-    function addSeg(x1,y1,x2,y2,w,depth){
-      segs.push({x1:x1,y1:y1,x2:x2,y2:y2,w:w,depth:depth});
-    }
-
-    function pcbBranch(x,y,dir,len,depth,w){
-      // dir: 0=up,1=right,2=down,3=left
-      var dx=[0,1,0,-1],dy=[-1,0,1,0];
-      var ex=x+dx[dir]*len, ey=y+dy[dir]*len;
-      addSeg(x,y,ex,ey,w,depth);
-      // add junction dot at each bend point
-      if(depth>0) nodes.push({x:x,y:y,r:w*1.4,phase:Math.random()*Math.PI*2,isMid:true});
-      if(depth>=5){
-        // terminal node
-        nodes.push({x:ex,y:ey,r:3+Math.random()*2,phase:Math.random()*Math.PI*2,isMid:false});
-        return;
-      }
-      // branch left and right of current direction
-      var turns=depth<2?[-1,0,1]:[-1,1];
-      for(var i=0;i<turns.length;i++){
-        var childDir=(dir+4+turns[i])%4;
-        var childLen=len*(0.55+Math.random()*0.15);
-        var childW=Math.max(0.4,w*0.7);
-        // L-bend: go forward a bit, then turn
-        var fwd=len*(0.3+Math.random()*0.2);
-        var bx=x+dx[dir]*fwd, by=y+dy[dir]*fwd;
-        addSeg(x,y,bx,by,w,depth);
-        pcbBranch(bx,by,childDir,childLen,depth+1,childW);
-      }
-      // add energy dot for this segment
-      var seg=segs[segs.length-1];
-      dots.push({x1:x,y1:y,x2:ex,y2:ey,t:Math.random(),speed:0.004+Math.random()*0.004});
-    }
-
-    function buildCircuit(){
-      segs=[]; nodes=[]; dots=[];
-      var cx=canvas.width/2, cy=canvas.height;
-      var trunk=canvas.height*0.28;
-      // main trunk going up
-      addSeg(cx, cy, cx, cy-trunk, 3, 0);
-      dots.push({x1:cx,y1:cy,x2:cx,y2:cy-trunk,t:0,speed:0.005});
-      dots.push({x1:cx,y1:cy,x2:cx,y2:cy-trunk,t:0.5,speed:0.004});
-      var y0=cy-trunk;
-      // 3 branches from top of trunk
-      var spread=canvas.width*0.13;
-      // left branch
-      pcbBranch(cx,y0,3,spread,1,2);
-      // up branch
-      pcbBranch(cx,y0,0,trunk*0.5,1,2);
-      // right branch
-      pcbBranch(cx,y0,1,spread,1,2);
-    }
-
-    function resize(){
-      var p=canvas.parentElement;
-      canvas.width=p?p.offsetWidth:window.innerWidth;
-      canvas.height=p?p.offsetHeight:520;
-      buildCircuit();
-    }
-    resize();
-    window.addEventListener('resize',resize);
-
-    function drawCircuit(){
-      for(var i=0;i<segs.length;i++){
-        var s=segs[i];
-        var alpha=Math.max(0.12, 0.55-s.depth*0.07);
-        ctx.globalAlpha=alpha;
-        ctx.strokeStyle='#00ff41';
-        ctx.lineWidth=s.w;
-        ctx.lineCap='square';
-        ctx.beginPath();
-        ctx.moveTo(s.x1,s.y1);
-        ctx.lineTo(s.x2,s.y2);
-        ctx.stroke();
-      }
-    }
-
-    function drawNodes(t){
-      for(var i=0;i<nodes.length;i++){
-        var n=nodes[i];
-        var pulse=0.5+0.5*(0.5+0.5*Math.sin(t*0.002+n.phase));
-        if(n.isMid){
-          // small junction
-          ctx.globalAlpha=pulse*0.7;
-          ctx.fillStyle='#00ff41';
-          ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
-        } else {
-          // terminal glow node
-          var gr=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*4);
-          gr.addColorStop(0,'rgba(0,229,204,1)');
-          gr.addColorStop(0.4,'rgba(0,229,204,0.5)');
-          gr.addColorStop(1,'rgba(0,229,204,0)');
-          ctx.globalAlpha=pulse;
-          ctx.fillStyle=gr;
-          ctx.beginPath(); ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2); ctx.fill();
-          ctx.globalAlpha=pulse;
-          ctx.fillStyle='rgba(0,229,204,0.9)';
-          ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
-        }
-      }
-    }
-
-    function drawDots(){
-      for(var i=0;i<dots.length;i++){
-        var d=dots[i];
-        d.t+=d.speed;
-        if(d.t>1.1) d.t=0;
-        if(d.t>1) continue;
-        var px=d.x1+(d.x2-d.x1)*d.t;
-        var py=d.y1+(d.y2-d.y1)*d.t;
-        var fade=d.t>0.8?(1-d.t)/0.2:1;
-        ctx.globalAlpha=fade*0.95;
-        ctx.fillStyle='rgba(0,255,65,1)';
-        ctx.beginPath(); ctx.arc(px,py,2.5,0,Math.PI*2); ctx.fill();
-        ctx.globalAlpha=fade*0.35;
-        ctx.fillStyle='rgba(0,255,65,0.6)';
-        ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill();
-      }
-    }
-
-    if(reduced){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawCircuit();
-      ctx.globalAlpha=1; drawNodes(0);
-      return;
-    }
-
-    function animate(){
-      var t=Date.now()-startTime;
-      var cxm=canvas.width/2, cym=canvas.height/2;
-      if(mouse.x!==-9999){
-        parallax.x+=((mouse.x-cxm)*0.018-parallax.x)*0.07;
-        parallax.y+=((mouse.y-cym)*0.008-parallax.y)*0.07;
-      } else { parallax.x*=0.95; parallax.y*=0.95; }
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.save();
-      ctx.translate(parallax.x,parallax.y);
-      drawCircuit();
-      ctx.globalAlpha=1;
-      drawNodes(t);
-      ctx.globalAlpha=1;
-      drawDots();
-      ctx.restore();
-      requestAnimationFrame(animate);
-    }
-    animate();
-  })();
 
   /* ── Typewriter ── */
   (function () {
