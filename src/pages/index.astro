@@ -49,7 +49,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       var routes = [];
       var dots = [];
 
-      function pt(x, y, w, h) { return { x: w * x, y: h * y }; }
+      var imageW = 1280, imageH = 853;
+
+      function coverPoint(x, y, w, h) {
+        var scale = Math.max(w / imageW, h / imageH);
+        var drawnW = imageW * scale;
+        var drawnH = imageH * scale;
+        var offsetX = (w - drawnW) / 2;
+        var offsetY = (h - drawnH) / 2;
+        return {
+          x: offsetX + x * drawnW,
+          y: offsetY + y * drawnH
+        };
+      }
 
       function makeRoute(points) {
         var total = 0;
@@ -87,13 +99,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         routes = [
-          makeRoute([pt(0.60,0.08,w,h), pt(0.60,0.34,w,h), pt(0.73,0.34,w,h), pt(0.73,0.54,w,h), pt(0.84,0.54,w,h)]),
-          makeRoute([pt(0.57,0.24,w,h), pt(0.68,0.24,w,h), pt(0.68,0.16,w,h), pt(0.82,0.16,w,h)]),
-          makeRoute([pt(0.56,0.44,w,h), pt(0.68,0.44,w,h), pt(0.68,0.62,w,h), pt(0.82,0.62,w,h)]),
-          makeRoute([pt(0.62,0.58,w,h), pt(0.75,0.58,w,h), pt(0.75,0.82,w,h), pt(0.88,0.82,w,h)]),
-          makeRoute([pt(0.73,0.10,w,h), pt(0.73,0.30,w,h)]),
-          makeRoute([pt(0.80,0.36,w,h), pt(0.92,0.36,w,h)]),
-          makeRoute([pt(0.78,0.72,w,h), pt(0.93,0.72,w,h)])
+          makeRoute([coverPoint(0.60,0.08,w,h), coverPoint(0.60,0.34,w,h), coverPoint(0.73,0.34,w,h), coverPoint(0.73,0.54,w,h), coverPoint(0.84,0.54,w,h)]),
+          makeRoute([coverPoint(0.57,0.24,w,h), coverPoint(0.68,0.24,w,h), coverPoint(0.68,0.16,w,h), coverPoint(0.82,0.16,w,h)]),
+          makeRoute([coverPoint(0.56,0.44,w,h), coverPoint(0.68,0.44,w,h), coverPoint(0.68,0.62,w,h), coverPoint(0.82,0.62,w,h)]),
+          makeRoute([coverPoint(0.62,0.58,w,h), coverPoint(0.75,0.58,w,h), coverPoint(0.75,0.82,w,h), coverPoint(0.88,0.82,w,h)]),
+          makeRoute([coverPoint(0.73,0.10,w,h), coverPoint(0.73,0.30,w,h)]),
+          makeRoute([coverPoint(0.80,0.36,w,h), coverPoint(0.92,0.36,w,h)]),
+          makeRoute([coverPoint(0.78,0.72,w,h), coverPoint(0.93,0.72,w,h)])
         ];
 
         dots = [];
