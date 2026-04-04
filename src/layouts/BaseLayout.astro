@@ -38,14 +38,29 @@ const { title, description = 'VesTech Research — výzkum na hraně technologi�
 
     <script is:inline>
     (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        var o = document.getElementById('boot-overlay');
-        if (o) o.remove();
-        return;
-      }
       var overlay = document.getElementById('boot-overlay');
       var textEl = document.getElementById('boot-text');
       if (!overlay || !textEl) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        overlay.remove();
+        return;
+      }
+
+      var bootSeen = false;
+      try {
+        bootSeen = localStorage.getItem('vestech.bootSeen') === '1';
+      } catch (e) {}
+
+      if (bootSeen) {
+        overlay.remove();
+        return;
+      }
+
+      try {
+        localStorage.setItem('vestech.bootSeen', '1');
+      } catch (e) {}
+
       var lines = [
         '> VesTech Research v2.6.0',
         '> Loading AI modules... <span style="color:#00e5cc">OK</span>',
