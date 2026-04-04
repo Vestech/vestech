@@ -103,6 +103,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             dots.push({
               route: i,
               t: (j / count) + Math.random() * 0.08,
+              dir: Math.random() > 0.5 ? 1 : -1,
               speed: 0.0009 + Math.random() * 0.0012,
               size: 1.35 + Math.random() * 0.8
             });
@@ -117,7 +118,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         for (var i = 0; i < dots.length; i++) {
           var dot = dots[i];
-          dot.t += dot.speed;
+          dot.t += dot.speed * dot.dir;
+          if (dot.t >= 1) { dot.t = 1; dot.dir = -1; }
+          if (dot.t <= 0) { dot.t = 0; dot.dir = 1; }
           var p = routePoint(routes[dot.route], dot.t);
           var glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dot.size * 5);
           glow.addColorStop(0, 'rgba(180,245,255,0.95)');
