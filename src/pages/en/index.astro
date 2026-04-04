@@ -1,15 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
-import { getCollection } from 'astro:content';
-
-const allPosts = await getCollection('blog');
-const enPosts = allPosts
-  .filter(p => p.data.lang === 'en')
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 3);
-
-const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automation'];
 ---
 <BaseLayout title="Research at the edge of technology" lang="en">
 
@@ -36,68 +26,6 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
             About us →
           </a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FEATURED POSTS ===== -->
-  <section class="max-w-6xl mx-auto px-4 py-16">
-    <h2 class="text-2xl font-bold glow-green section-heading" style="color:#00ff41; font-family:'Space Grotesk',sans-serif">
-      Latest articles
-      <span class="animated-underline"></span>
-    </h2>
-    <div class="mb-8"></div>
-    <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {enPosts.map(post => (
-        <PostCard
-          title={post.data.title}
-          description={post.data.description}
-          slug={post.id}
-          tags={post.data.tags}
-          author={post.data.author}
-          pubDate={post.data.pubDate}
-          readTime={post.data.readTime}
-          lang="en"
-        />
-      ))}
-    </div>
-    <div class="text-center mt-10">
-      <a href="/en/blog" class="btn-primary">All articles →</a>
-    </div>
-  </section>
-
-  <!-- ===== TOPICS ===== -->
-  <section class="max-w-6xl mx-auto px-4 py-12 border-t border-green-900/20">
-    <h2 class="text-xl font-bold mb-6 text-[#e8f5e9] section-heading" style="font-family:'Space Grotesk',sans-serif">
-      Topics
-      <span class="animated-underline"></span>
-    </h2>
-    <div id="topics-grid" class="flex flex-wrap gap-3">
-      {topics.map(t => (
-        <a href={`/en/blog?tag=${t}`} class="tag topic-tag hover:bg-[#00ff41]/15 transition-colors cursor-pointer">
-          {t}
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- ===== ABOUT SNIPPET ===== -->
-  <section class="max-w-6xl mx-auto px-4 py-16 about-section">
-    <div class="card-glass rounded-xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center">
-      <div class="w-24 h-24 rounded-full overflow-hidden border border-[#00ff41]/30 flex-shrink-0">
-        <img src="/images/guru-3.jpg" alt="VesTech Guru" class="w-full h-full object-cover" />
-      </div>
-      <div>
-        <h2 class="text-xl font-bold mb-3 text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
-          What is VesTech Research?
-        </h2>
-        <p class="text-[#7ab87a] leading-relaxed">
-          An independent research blog focused on technologies that are changing the way we develop and test software.
-          We write about AI, QA, fintech and DevOps from the perspective of practitioners who work with these technologies daily.
-        </p>
-        <a href="/en/about" class="text-[#00e5cc] text-sm mt-3 inline-block hover:text-[#00ff41] transition-colors">
-          More about us →
-        </a>
       </div>
     </div>
   </section>
@@ -130,41 +58,6 @@ const topics = ['AI', 'QA', 'Fintech', 'DevOps', 'Security', 'Testing', 'Automat
       setTimeout(tick, deleting ? 52 : 88);
     }
     setTimeout(tick, 2200);
-  })();
-
-  /* ── GSAP ScrollTrigger ── */
-  (function () {
-    if (reduced) return;
-    if (typeof gsap === 'undefined') return;
-    gsap.registerPlugin(ScrollTrigger);
-
-    document.querySelectorAll('.section-heading').forEach(function (heading) {
-      gsap.from(heading, { x: -35, opacity: 0, duration: 0.75, ease: 'power2.out',
-        scrollTrigger: { trigger: heading, start: 'top 85%', once: true } });
-      var line = heading.querySelector('.animated-underline');
-      if (line) gsap.to(line, { scaleX: 1, duration: 0.8, delay: 0.3, ease: 'power2.out',
-        scrollTrigger: { trigger: heading, start: 'top 85%', once: true } });
-    });
-
-    var postGrid = document.getElementById('post-grid');
-    if (postGrid && postGrid.children.length) {
-      gsap.from(Array.from(postGrid.children), { y: 45, opacity: 0, duration: 0.65,
-        stagger: 0.13, ease: 'power2.out',
-        scrollTrigger: { trigger: postGrid, start: 'top 85%', once: true } });
-    }
-
-    var topicsGrid = document.getElementById('topics-grid');
-    if (topicsGrid && topicsGrid.children.length) {
-      gsap.from(Array.from(topicsGrid.children), { scale: 0.4, opacity: 0, duration: 0.38,
-        stagger: 0.07, ease: 'back.out(2.2)',
-        scrollTrigger: { trigger: topicsGrid, start: 'top 90%', once: true } });
-    }
-
-    var aboutCard = document.querySelector('.about-section .card-glass');
-    if (aboutCard) {
-      gsap.from(aboutCard, { y: 30, opacity: 0, scale: 0.96, duration: 0.8, ease: 'power2.out',
-        scrollTrigger: { trigger: aboutCard, start: 'top 88%', once: true } });
-    }
   })();
 })();
 </script>
