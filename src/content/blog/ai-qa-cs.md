@@ -6,6 +6,7 @@ author: Ondra
 lang: cs
 tags: [AI, QA, testování, automatizace]
 readTime: 6
+status: published
 ---
 
 Ještě před třemi lety byl test automatizace záležitostí seniorních inženýrů, kteří trávili hodiny psaním Selenium skriptů. Dnes AI nástroje jako Playwright AI, Copilot nebo specializované testovací agenti dokáží vygenerovat základní test suite za minuty.

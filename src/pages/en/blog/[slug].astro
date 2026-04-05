@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { isPublished } from '../../../lib/postStatus';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts
-    .filter(p => p.data.lang === 'en')
+    .filter(p => p.data.lang === 'en' && isPublished(p.data.status))
     .map(post => ({ params: { slug: post.id }, props: { post } }));
 }
 

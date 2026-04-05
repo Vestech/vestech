@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { statusLabel } from '../lib/postStatus';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const groups = {
+  in_review: posts.filter((post) => post.data.status === 'in_review'),
+  rework: posts.filter((post) => post.data.status === 'rework'),
+  draft: posts.filter((post) => post.data.status === 'draft'),
+  published: posts.filter((post) => post.data.status === 'published'),
+};
+
+const sections = [
+  {
+    key: 'in_review',
+    title: 'Ke schválení',
+    description: 'Články připravené na tvoje rozhodnutí.',
+  },
+  {
+    key: 'rework',
+    title: 'Vráceno k přepracování',
+    description: 'Články, které jsi poslal zpět s připomínkami.',
+  },
+  {
+    key: 'draft',
+    title: 'Drafty',
+    description: 'Rozpracované články, které ještě nejsou připravené na review.',
+  },
+  {
+    key: 'published',
+    title: 'Publikováno',
+    description: 'Články, které jsou už veřejně venku.',
+  },
+] as const;
+---
+<BaseLayout title="Admin" lang="cs">
+  <section class="max-w-6xl mx-auto px-4 py-16 space-y-10">
+    <div class="space-y-4 max-w-3xl">
+      <div class="tag w-fit">Admin sekce</div>
+      <h1 class="text-4xl md:text-5xl font-black text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
+        Moderace článků před publikací
+      </h1>
+      <p class="text-[#c8e6c9] leading-relaxed text-lg">
+        Tady uvidíš všechny články podle stavu. Veřejný blog ukazuje jen články se stavem <strong>published</strong>.
+        Když bude článek hotový na review, nastavím mu stav <strong>in_review</strong>. Ty si ho tady otevřeš,
+        zkontroluješ a rozhodneš, jestli jde ven, nebo zpátky k přepracování.
+      </p>
+      <div class="card-glass rounded-xl p-5 text-sm text-[#c8e6c9] leading-relaxed">
+        <strong class="text-[#00ff41]">Poznámka:</strong> Web je teď hostovaný jako statický Astro projekt na Cloudflare Pages.
+        To znamená, že tahle admin sekce je reálný review dashboard, ale tlačítka Publish / Vrátit k přepracování zatím fungují
+        přes změnu frontmatteru v repu a nový deploy. Pokud budeš chtít plně klikací workflow přímo z webu bez commitu,
+        doplníme k tomu malý backend nebo GitHub API vrstvu.
+      </div>
+    </div>
+
+    <div class="grid gap-8">
+      {sections.map((section) => (
+        <section class="space-y-4">
+          <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h2 class="text-2xl font-bold text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">{section.title}</h2>
+              <p class="text-[#7ab87a] text-sm">{section.description}</p>
+            </div>
+            <span class="tag">{groups[section.key].length}</span>
+          </div>
+
+          {groups[section.key].length === 0 ? (
+            <div class="card-glass rounded-xl p-5 text-[#7ab87a] text-sm">
+              V téhle sekci teď nic není.
+            </div>
+          ) : (
+            <div class="grid gap-4">
+              {groups[section.key].map((post) => (
+                <article class="card-glass rounded-xl p-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                  <div class="space-y-3 max-w-3xl">
+                    <div class="flex flex-wrap gap-2 items-center">
+                      <span class="tag">{post.data.lang.toUpperCase()}</span>
+                      <span class="tag">{statusLabel(post.data.status, 'cs')}</span>
+                      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+                    </div>
+                    <div>
+                      <h3 class="text-xl font-bold text-[#e8f5e9]">{post.data.title}</h3>
+                      <p class="text-[#c8e6c9] mt-2">{post.data.description}</p>
+                    </div>
+                    <div class="text-sm text-[#7ab87a] flex flex-wrap gap-3">
+                      <span>Autor: {post.data.author}</span>
+                      <span>Datum: {post.data.pubDate.toLocaleDateString('cs-CZ')}</span>
+                      {post.data.readTime && <span>{post.data.readTime} min čtení</span>}
+                    </div>
+                    {post.data.reviewerNotes && (
+                      <div class="rounded-lg border border-amber-500/30 bg-amber-500/8 px-4 py-3 text-sm text-amber-100">
+                        <strong class="text-amber-300">Poznámka k review:</strong><br />
+                        {post.data.reviewerNotes}
+                      </div>
+                    )}
+                  </div>
+
+                  <div class="flex flex-col gap-3 md:items-end md:min-w-[220px]">
+                    <div class="btn-primary text-center opacity-80 cursor-default">
+                      Preview v adminu
+                    </div>
+                    <div class="rounded-lg border border-[#00ff41]/20 bg-[#08110d] px-4 py-3 text-sm text-[#c8e6c9]">
+                      <div><strong class="text-[#00ff41]">Publish:</strong> nastav `status: published`</div>
+                      <div class="mt-2"><strong class="text-[#00e5cc]">Vrátit:</strong> nastav `status: rework` a doplň `reviewerNotes`</div>
+                      <div class="mt-2"><strong class="text-[#00ff41]">Na schválení:</strong> nastav `status: in_review`</div>
+                    </div>
+                    <code class="text-xs text-[#7ab87a] break-all">src/content/blog/{post.id}.md</code>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

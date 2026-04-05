@@ -6,6 +6,7 @@ author: Jára
 lang: en
 tags: [AI, QA, testing, automation]
 readTime: 6
+status: published
 ---
 
 Three years ago, test automation was a job for senior engineers who spent hours writing Selenium scripts. Today, AI tools like Playwright AI, Copilot, or specialized testing agents can generate a basic test suite in minutes.

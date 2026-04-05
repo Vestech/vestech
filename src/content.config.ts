@@ -12,6 +12,8 @@ const blog = defineCollection({
     tags: z.array(z.string()).default([]),
     image: z.string().optional(),
     readTime: z.number().optional(),
+    status: z.enum(['draft', 'in_review', 'rework', 'published']).default('draft'),
+    reviewerNotes: z.string().optional(),
   }),
 });
 

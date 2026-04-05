@@ -5,6 +5,7 @@ interface Props {
 const { lang = 'cs' } = Astro.props;
 const blogLabel = lang === 'cs' ? 'Blog' : 'Blog';
 const aboutLabel = lang === 'cs' ? 'O nás' : 'About';
+const adminLabel = lang === 'cs' ? 'Admin' : 'Admin';
 const otherLang = lang === 'cs' ? 'en' : 'cs';
 const otherUrl = lang === 'cs' ? '/en' : '/';
 ---
@@ -27,6 +28,8 @@ const otherUrl = lang === 'cs' ? '/en' : '/';
          class="text-[#7ab87a] hover:text-[#00ff41] transition-colors">{blogLabel}</a>
       <a href={lang === 'en' ? '/en/about' : '/about'}
          class="text-[#7ab87a] hover:text-[#00ff41] transition-colors">{aboutLabel}</a>
+      <a href="/admin"
+         class="text-[#7ab87a] hover:text-[#00ff41] transition-colors">{adminLabel}</a>
       <a href={otherUrl}
          class="border border-[#00ff41]/30 hover:border-[#00ff41] text-[#00ff41] px-3 py-1 rounded text-xs font-bold transition-colors uppercase tracking-widest">
         {otherLang}
