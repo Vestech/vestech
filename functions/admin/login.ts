@@ -27,7 +27,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return Response.redirect(buildLoginUrl(request, 'invalid', next).toString(), 302);
   }
 
-  const sessionCookie = await createSessionCookie(env);
+  const sessionCookie = createSessionCookie(env);
   if (!sessionCookie) {
     return Response.redirect(buildLoginUrl(request, 'config', next).toString(), 302);
   }

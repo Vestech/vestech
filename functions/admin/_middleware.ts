@@ -19,7 +19,7 @@ export const onRequest = async (context: PagesContext) => {
     return next();
   }
 
-  if (await isAuthenticated(request, env)) {
+  if (isAuthenticated(request, env)) {
     const response = await next();
     response.headers.set('Cache-Control', 'private, no-store');
     return response;

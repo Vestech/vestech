@@ -25,8 +25,8 @@ export function sanitizeNextPath(next: string | null | undefined) {
   return next;
 }
 
-export async function isAuthenticated(request: Request, env: Env) {
-  const expected = await createSessionToken(env);
+export function isAuthenticated(request: Request, env: Env) {
+  const expected = createSessionToken(env);
   if (!expected) {
     return false;
   }
@@ -35,8 +35,8 @@ export async function isAuthenticated(request: Request, env: Env) {
   return timingSafeEqual(cookies[SESSION_COOKIE], expected);
 }
 
-export async function createSessionCookie(env: Env) {
-  const token = await createSessionToken(env);
+export function createSessionCookie(env: Env) {
+  const token = createSessionToken(env);
   if (!token) {
     return null;
   }
@@ -62,26 +62,12 @@ export function clearSessionCookie() {
   ].join('; ');
 }
 
-async function createSessionToken(env: Env) {
+function createSessionToken(env: Env) {
   if (!env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
     return null;
   }
 
-  const key = await crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(env.ADMIN_SESSION_SECRET),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-
-  const signature = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    new TextEncoder().encode(`v1:${env.ADMIN_PASSWORD}`),
-  );
-
-  return toBase64Url(signature);
+  return `v1-${simpleHash(`${env.ADMIN_SESSION_SECRET}:${env.ADMIN_PASSWORD}`)}`;
 }
 
 function parseCookies(cookieHeader: string | null) {
@@ -114,22 +100,12 @@ function timingSafeEqual(left: string | undefined, right: string | undefined) {
   return mismatch === 0;
 }
 
-function toBase64Url(input: ArrayBuffer) {
-  const bytes = new Uint8Array(input);
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-  let output = '';
-
-  for (let index = 0; index < bytes.length; index += 3) {
-    const a = bytes[index]!;
-    const b = index + 1 < bytes.length ? bytes[index + 1]! : 0;
-    const c = index + 2 < bytes.length ? bytes[index + 2]! : 0;
-    const triple = (a << 16) | (b << 8) | c;
-
-    output += alphabet[(triple >> 18) & 63];
-    output += alphabet[(triple >> 12) & 63];
-    output += index + 1 < bytes.length ? alphabet[(triple >> 6) & 63] : '';
-    output += index + 2 < bytes.length ? alphabet[triple & 63] : '';
+function simpleHash(input: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
   }
 
-  return output;
+  return Math.abs(hash >>> 0).toString(36);
 }
