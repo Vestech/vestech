@@ -23,6 +23,17 @@ npm run build
 # výstup: ./dist/
 ```
 
+## Admin login
+
+`/admin` je chráněné přes Cloudflare Pages Functions. Bez platného přihlášení se dashboard nevrací a návštěvník je přesměrovaný na `/admin/login`.
+
+V Cloudflare Pages nastav tyto production variables:
+
+- `ADMIN_PASSWORD` = heslo do adminu
+- `ADMIN_SESSION_SECRET` = dlouhý náhodný secret pro podepisování session cookie
+
+Po úspěšném loginu se nastaví `HttpOnly` cookie na `/admin` s platností 8 hodin.
+
 ---
 
 ## Nový článek

@@ -17,20 +17,21 @@ Admin přehled je na:
 
 ## Ochrana admin sekce
 
-`/admin` je nově schovaný za přihlašovací branou přímo na webu.
-Bez zadání hesla se dashboard nezobrazí.
+`/admin` je nově chráněný server-side přes Cloudflare Pages Functions.
+Bez platného přihlášení se dashboard vůbec nevrací a požadavek jde na `/admin/login`.
 
 Aktuální řešení:
 
-- lehká klientská ochrana pro statický deploy
-- po zadání správného hesla se admin odemkne v rámci session
-- po odhlášení nebo zavření session je potřeba znovu přihlášení
+- heslo je uložené v `ADMIN_PASSWORD` v Cloudflare Pages, ne v repozitáři
+- po zadání správného hesla se nastaví `HttpOnly` session cookie pro `/admin`
+- po odhlášení nebo po expiraci session je potřeba znovu přihlášení
 
-### Aktuální admin heslo
+### Potřebná Cloudflare proměnná
 
-- `vestech-admin-2026`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
 
-> Doporučení: tohle je dobré jako rychlá první ochrana, ale není to plnohodnotné server-side zabezpečení. Pro produkční vyšší ochranu doporučuju přejít na Cloudflare Access nebo server-side auth vrstvu.
+> Doporučení: na aktuální statický Astro + Cloudflare Pages setup je to pragmatické řešení. Pokud budeš chtít silnější access control pro více lidí nebo identity provider, další krok je Cloudflare Access.
 
 ## Jak to používat
 

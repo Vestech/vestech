@@ -7,9 +7,15 @@ interface Props {
   title: string;
   description?: string;
   lang?: 'cs' | 'en';
+  noIndex?: boolean;
 }
 
-const { title, description = 'VesTech Research — výzkum na hraně technologií', lang = 'cs' } = Astro.props;
+const {
+  title,
+  description = 'VesTech Research — výzkum na hraně technologií',
+  lang = 'cs',
+  noIndex = false,
+} = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -17,6 +23,7 @@ const { title, description = 'VesTech Research — výzkum na hraně technologi�
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title} | VesTech Research</title>
     <link rel="icon" type="image/jpeg" href="/images/guru-1.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
