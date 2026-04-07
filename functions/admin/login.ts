@@ -1,9 +1,3 @@
-import {
-  buildLoginUrl,
-  createSessionCookie,
-  sanitizeNextPath,
-} from './_lib/auth';
-
 type Env = {
   ADMIN_PASSWORD?: string;
   ADMIN_SESSION_SECRET?: string;
@@ -14,39 +8,83 @@ type PagesContext = {
   env: Env;
 };
 
+const SESSION_COOKIE = 'vestech_admin_session';
+const SESSION_DURATION_SECONDS = 60 * 60 * 8;
+
 export const onRequestPost = async ({ request, env }: PagesContext) => {
-  const formData = await request.formData();
-  const password = String(formData.get('password') ?? '');
-  const next = sanitizeNextPath(String(formData.get('next') ?? '/admin'));
+  try {
+    const formData = await request.formData();
+    const password = String(formData.get('password') ?? '');
+    const next = sanitizeNextPath(String(formData.get('next') ?? '/admin'));
 
-  if (!env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
-    return Response.redirect(buildLoginUrl(request, 'config', next).toString(), 302);
+    if (!env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
+      return redirect(buildLoginUrl(request, 'config', next));
+    }
+
+    if (password !== env.ADMIN_PASSWORD) {
+      return redirect(buildLoginUrl(request, 'invalid', next));
+    }
+
+    const token = createSessionToken(env);
+    if (!token) {
+      return redirect(buildLoginUrl(request, 'config', next));
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: new URL(next, request.url).toString(),
+        'Set-Cookie': [
+          `${SESSION_COOKIE}=${token}`,
+          'HttpOnly',
+          'Path=/admin',
+          'SameSite=Lax',
+          'Secure',
+          `Max-Age=${SESSION_DURATION_SECONDS}`,
+        ].join('; '),
+        'Cache-Control': 'private, no-store',
+      },
+    });
+  } catch (error) {
+    return new Response(
+      `Admin login error: ${error instanceof Error ? error.message : 'unknown'}`,
+      { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
+    );
   }
-
-  if (!timingSafeEqual(password, env.ADMIN_PASSWORD)) {
-    return Response.redirect(buildLoginUrl(request, 'invalid', next).toString(), 302);
-  }
-
-  const sessionCookie = createSessionCookie(env);
-  if (!sessionCookie) {
-    return Response.redirect(buildLoginUrl(request, 'config', next).toString(), 302);
-  }
-
-  const response = Response.redirect(new URL(next, request.url).toString(), 302);
-  response.headers.append('Set-Cookie', sessionCookie);
-  response.headers.set('Cache-Control', 'private, no-store');
-  return response;
 };
 
-function timingSafeEqual(left: string, right: string) {
-  if (left.length !== right.length) {
-    return false;
-  }
+function buildLoginUrl(request: Request, error?: string, next = '/admin') {
+  const url = new URL('/admin/login', request.url);
+  url.searchParams.set('next', sanitizeNextPath(next));
+  if (error) url.searchParams.set('error', error);
+  return url.toString();
+}
 
-  let mismatch = 0;
-  for (let index = 0; index < left.length; index += 1) {
-    mismatch |= left.charCodeAt(index) ^ right.charCodeAt(index);
-  }
+function sanitizeNextPath(next: string | null | undefined) {
+  if (!next || !next.startsWith('/') || next.startsWith('//')) return '/admin';
+  return next;
+}
 
-  return mismatch === 0;
+function createSessionToken(env: Env) {
+  if (!env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) return null;
+  return `v1-${simpleHash(`${env.ADMIN_SESSION_SECRET}:${env.ADMIN_PASSWORD}`)}`;
+}
+
+function simpleHash(input: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return Math.abs(hash >>> 0).toString(36);
+}
+
+function redirect(location: string) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: location,
+      'Cache-Control': 'private, no-store',
+    },
+  });
 }

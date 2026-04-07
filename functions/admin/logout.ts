@@ -1,12 +1,24 @@
-import { buildLoginUrl, clearSessionCookie } from './_lib/auth';
-
 type PagesContext = {
   request: Request;
 };
 
+const SESSION_COOKIE = 'vestech_admin_session';
+
 export const onRequestGet = async ({ request }: PagesContext) => {
-  const response = Response.redirect(buildLoginUrl(request).toString(), 302);
-  response.headers.append('Set-Cookie', clearSessionCookie());
-  response.headers.set('Cache-Control', 'private, no-store');
-  return response;
+  const loginUrl = new URL('/admin/login', request.url).toString();
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: loginUrl,
+      'Set-Cookie': [
+        `${SESSION_COOKIE}=`,
+        'HttpOnly',
+        'Path=/admin',
+        'SameSite=Lax',
+        'Secure',
+        'Max-Age=0',
+      ].join('; '),
+      'Cache-Control': 'private, no-store',
+    },
+  });
 };
