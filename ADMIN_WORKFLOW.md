@@ -15,6 +15,23 @@ Admin přehled je na:
 
 - `/admin`
 
+## Ochrana admin sekce
+
+`/admin` je nově schovaný za přihlašovací branou přímo na webu.
+Bez zadání hesla se dashboard nezobrazí.
+
+Aktuální řešení:
+
+- lehká klientská ochrana pro statický deploy
+- po zadání správného hesla se admin odemkne v rámci session
+- po odhlášení nebo zavření session je potřeba znovu přihlášení
+
+### Aktuální admin heslo
+
+- `vestech-admin-2026`
+
+> Doporučení: tohle je dobré jako rychlá první ochrana, ale není to plnohodnotné server-side zabezpečení. Pro produkční vyšší ochranu doporučuju přejít na Cloudflare Access nebo server-side auth vrstvu.
+
 ## Jak to používat
 
 Každý článek v `src/content/blog/*.md` může mít ve frontmatteru např.:

@@ -37,12 +37,52 @@ const sections = [
 ] as const;
 ---
 <BaseLayout title="Admin" lang="cs">
-  <section class="max-w-6xl mx-auto px-4 py-16 space-y-10">
+  <section id="admin-login" class="max-w-xl mx-auto px-4 py-20">
+    <div class="card-glass rounded-2xl p-8 space-y-6">
+      <div class="space-y-3">
+        <div class="tag w-fit">Uzamčená sekce</div>
+        <h1 class="text-3xl md:text-4xl font-black text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
+          Přihlášení do administrace
+        </h1>
+        <p class="text-[#c8e6c9] leading-relaxed">
+          Admin sekce není veřejně přístupná. Pro zobrazení review dashboardu zadej administrační heslo.
+        </p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div class="space-y-2">
+          <label for="admin-password" class="text-sm text-[#7ab87a]">Admin heslo</label>
+          <input
+            id="admin-password"
+            type="password"
+            autocomplete="current-password"
+            class="w-full rounded-lg border border-[#00ff41]/20 bg-[#08110d] px-4 py-3 text-[#e8f5e9] outline-none focus:border-[#00ff41]"
+            placeholder="Zadej heslo"
+          />
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center text-center">Odemknout admin</button>
+        <p id="admin-login-error" class="hidden text-sm text-red-300"></p>
+      </form>
+
+      <div class="rounded-xl border border-amber-500/20 bg-amber-500/8 px-4 py-3 text-sm text-amber-100 leading-relaxed">
+        Tohle je lehká klientská ochrana vhodná pro aktuální statický deploy. Pro silnější ochranu doporučuju další krok dát přes Cloudflare Access nebo server-side auth.
+      </div>
+    </div>
+  </section>
+
+  <section id="admin-dashboard" class="hidden max-w-6xl mx-auto px-4 py-16 space-y-10">
     <div class="space-y-4 max-w-3xl">
-      <div class="tag w-fit">Admin sekce</div>
-      <h1 class="text-4xl md:text-5xl font-black text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
-        Moderace článků před publikací
-      </h1>
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div class="tag w-fit">Admin sekce</div>
+          <h1 class="text-4xl md:text-5xl font-black text-[#e8f5e9] mt-4" style="font-family:'Space Grotesk',sans-serif">
+            Moderace článků před publikací
+          </h1>
+        </div>
+        <button id="admin-logout" type="button" class="border border-[#00ff41]/30 hover:border-[#00ff41] text-[#00ff41] px-4 py-2 rounded text-sm font-semibold transition-colors">
+          Odhlásit
+        </button>
+      </div>
       <p class="text-[#c8e6c9] leading-relaxed text-lg">
         Tady uvidíš všechny články podle stavu. Veřejný blog ukazuje jen články se stavem <strong>published</strong>.
         Když bude článek hotový na review, nastavím mu stav <strong>in_review</strong>. Ty si ho tady otevřeš,
@@ -117,4 +157,64 @@ const sections = [
       ))}
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      var loginSection = document.getElementById('admin-login');
+      var dashboardSection = document.getElementById('admin-dashboard');
+      var form = document.getElementById('admin-login-form');
+      var input = document.getElementById('admin-password');
+      var error = document.getElementById('admin-login-error');
+      var logout = document.getElementById('admin-logout');
+      var secret = 'vestech-admin-2026';
+      var storageKey = 'vestech.admin.unlocked';
+
+      function showDashboard() {
+        if (loginSection) loginSection.classList.add('hidden');
+        if (dashboardSection) dashboardSection.classList.remove('hidden');
+      }
+
+      function showLogin() {
+        if (dashboardSection) dashboardSection.classList.add('hidden');
+        if (loginSection) loginSection.classList.remove('hidden');
+      }
+
+      try {
+        if (sessionStorage.getItem(storageKey) === '1') {
+          showDashboard();
+        } else {
+          showLogin();
+        }
+      } catch (e) {
+        showLogin();
+      }
+
+      if (form && input) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          if (input.value === secret) {
+            try { sessionStorage.setItem(storageKey, '1'); } catch (e) {}
+            if (error) {
+              error.textContent = '';
+              error.classList.add('hidden');
+            }
+            input.value = '';
+            showDashboard();
+            return;
+          }
+          if (error) {
+            error.textContent = 'Neplatné heslo.';
+            error.classList.remove('hidden');
+          }
+        });
+      }
+
+      if (logout) {
+        logout.addEventListener('click', function () {
+          try { sessionStorage.removeItem(storageKey); } catch (e) {}
+          showLogin();
+        });
+      }
+    })();
+  </script>
 </BaseLayout>
