@@ -20,19 +20,19 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   const next = sanitizeNextPath(String(formData.get('next') ?? '/admin'));
 
   if (!env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
-    return Response.redirect(buildLoginUrl(request, 'config', next), 302);
+    return Response.redirect(buildLoginUrl(request, 'config', next).toString(), 302);
   }
 
   if (!timingSafeEqual(password, env.ADMIN_PASSWORD)) {
-    return Response.redirect(buildLoginUrl(request, 'invalid', next), 302);
+    return Response.redirect(buildLoginUrl(request, 'invalid', next).toString(), 302);
   }
 
   const sessionCookie = await createSessionCookie(env);
   if (!sessionCookie) {
-    return Response.redirect(buildLoginUrl(request, 'config', next), 302);
+    return Response.redirect(buildLoginUrl(request, 'config', next).toString(), 302);
   }
 
-  const response = Response.redirect(new URL(next, request.url), 302);
+  const response = Response.redirect(new URL(next, request.url).toString(), 302);
   response.headers.append('Set-Cookie', sessionCookie);
   response.headers.set('Cache-Control', 'private, no-store');
   return response;

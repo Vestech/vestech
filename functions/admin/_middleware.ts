@@ -25,5 +25,5 @@ export const onRequest = async (context: PagesContext) => {
     return response;
   }
 
-  return Response.redirect(buildLoginUrl(request, undefined, url.pathname), 302);
+  return Response.redirect(buildLoginUrl(request, undefined, url.pathname).toString(), 302);
 };

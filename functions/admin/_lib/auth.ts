@@ -116,10 +116,20 @@ function timingSafeEqual(left: string | undefined, right: string | undefined) {
 
 function toBase64Url(input: ArrayBuffer) {
   const bytes = new Uint8Array(input);
-  let binary = '';
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+  let output = '';
+
+  for (let index = 0; index < bytes.length; index += 3) {
+    const a = bytes[index]!;
+    const b = index + 1 < bytes.length ? bytes[index + 1]! : 0;
+    const c = index + 2 < bytes.length ? bytes[index + 2]! : 0;
+    const triple = (a << 16) | (b << 8) | c;
+
+    output += alphabet[(triple >> 18) & 63];
+    output += alphabet[(triple >> 12) & 63];
+    output += index + 1 < bytes.length ? alphabet[(triple >> 6) & 63] : '';
+    output += index + 2 < bytes.length ? alphabet[triple & 63] : '';
   }
 
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  return output;
 }

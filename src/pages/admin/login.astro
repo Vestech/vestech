@@ -9,9 +9,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <h1 class="text-3xl md:text-4xl font-black text-[#e8f5e9]" style="font-family:'Space Grotesk',sans-serif">
           Přihlášení do administrace
         </h1>
-        <p class="text-[#c8e6c9] leading-relaxed">
-          Veřejný web zůstává statický. Přístup do adminu ale teď hlídá server-side brána na Cloudflare Pages.
-        </p>
       </div>
 
       <form action="/admin/login" method="post" class="space-y-4">
@@ -33,9 +30,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <p id="admin-login-error" class="hidden rounded-xl border px-4 py-3 text-sm leading-relaxed"></p>
 
-      <div class="rounded-xl border border-amber-500/20 bg-amber-500/8 px-4 py-3 text-sm text-amber-100 leading-relaxed">
-        Heslo není uložené v repozitáři. Nastavuje se jako <code>ADMIN_PASSWORD</code> v Cloudflare Pages.
-      </div>
     </div>
   </section>
 
